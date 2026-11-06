@@ -1,28 +1,38 @@
+import { getData } from './audio.js';
 import p5 from 'p5'
+import { circles } from './visuals/circles.js';
+import { bars } from './visuals/bars.js';
+import { soundCircle } from './visuals/soundCircle.js';
+import { kaleidoscope } from './visuals/kaleidoscope.js';
+import { kaleidoscope3 } from './visuals/kaleidoscope3.js';
+import { kaleidoscope4 } from './visuals/kaleidoscope4.js';
 
-let showFrame = true;
+
+
+const visuals = [circles, bars, kaleidoscope, soundCircle, kaleidoscope3, kaleidoscope4];
+let current = 0
+
+// STYRING UNDER KONCERTEN
+// O         Åbn lydfiler (vælg flere for en setliste)
+// Mellemrum Pause / afspil
+// N         Næste nummer
+// M         Brug lydindgangen (line-in fra DJ-mixeren)
+// F         Vis eller skjul rammen
+// 1         Cirkler
+// 2         Søjler
+// 3         Kaleidoscope
+// 4         SoundCircle
+// 5         Kaleidoscope3
+// 6         Kaleidoscope4
+// Træk i et hjørne af fladen for at mappe til lærredet
 window.addEventListener('keydown', (e) => {
-    if (e.key === 'f') showFrame = !showFrame;
+    const number = Number(e.key);
+    if (number >= 1 && number <= visuals.length) {
+        current = number - 1;
+    }
 });
 
-let analyser;
-let data;
-
-async function startAudio() {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const audioContext = new AudioContext();
-    const source = audioContext.createMediaStreamSource(stream);
-
-    analyser = audioContext.createAnalyser();
-    analyser.fftSize = 256
-    source.connect(analyser);
-
-    data = new Uint8Array(analyser.frequencyBinCount);
-}
 export function createSketch(onReady) {
-    window.addEventListener('pointerdown', () => {
-        if (!analyser) startAudio();
-    });
 
     new p5((p) => {
         p.setup = () => {
@@ -32,48 +42,11 @@ export function createSketch(onReady) {
         };
 
         p.draw = () => {
-            p.background(0, 20)
-            if (analyser) {
-                analyser.getByteFrequencyData(data);
-                if (p.frameCount % 30 === 0) {
-                    const levels = [];
-                    for (let i = 0; i < 10; i++) {
-                        levels.push(data[i * 3]);
-                    }
-                    console.log(levels.join('  '));
-                }
-
-            }
-
-            p.fill(255, 0, 255);
-            const spacing = p.width / 10
-            for (let i = 0; i < 10; i++) {
-                const x = spacing * i + spacing / 2;
-
-
-                const level = data ? data[i * 3] : 0;
-                // TÆRSKEL: Juster her til koncerten.
-                // 172 er tærsklen for bassen (venstre cirkel). Hæv den, hvis cirklerne reagerer på støj.
-                // 3 er, hvor meget tærsklen falder for hver cirkel mod højre, fordi diskanten er svagere.
-                // Find støjniveauet ved at logge data[i * 3], når der er stille.
-
-                const threshold = 172 - i * 3;
-
-
-                const sound = Math.max(0, level - threshold);
-
-                p.circle(x, p.height / 2, 50 + sound * 3);
-
-            }
-
-            if (showFrame) {
-                p.noFill();
-                p.stroke(255);
-                p.strokeWeight(10);
-                p.rect(0, 0, p.width, p.height);
-                p.noStroke();
-            }
+            const data = getData();
+            visuals[current](p, data);
         };
+
+
 
     })
 };

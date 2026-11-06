@@ -3,3 +3,28 @@ body {
   overflow: hidden;
   background: #000;
 }
+
+.handles {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.handles.hidden {
+  display: none;
+}
+
+.outline {
+  fill: none;
+  stroke: white;
+  stroke-width: 4;
+}
+
+.handle {
+  fill: white;
+  pointer-events: all;
+  cursor: grab;
+  touch-action: none;
+}

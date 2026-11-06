@@ -31,31 +31,7 @@ export function createMapping(texture) {
     }
     update();
 
-    let active = null;
 
-    function toScreen(e) {
-        return new THREE.Vector2(
-            (e.clientX / window.innerWidth) * 2 - 1,
-            -(e.clientY / window.innerHeight) * 2 + 1
-        );
-    }
-
-    window.addEventListener('pointerdown', (e) => {
-        const mouse = toScreen(e);
-        active = corners.find((c) => c.distanceTo(mouse) < 0.1) ?? null;
-    });
-
-    window.addEventListener('pointermove', (e) => {
-        if (!active) return;
-        active.copy(toScreen(e));
-        update()
-    });
-
-    window.addEventListener('pointerup', () => {
-        active = null;
-        console.log(JSON.stringify(corners));
-    });
-
-    return { mesh };
+    return { mesh, corners, update };
 }
 

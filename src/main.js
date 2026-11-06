@@ -2,6 +2,7 @@ import './style.css'
 import { createSketch } from './sketch.js'
 import * as THREE from 'three';
 import { createMapping } from './mapping.js';
+import { createHandles } from './handles.js';
 
 
 const renderer = new THREE.WebGLRenderer();
@@ -18,9 +19,9 @@ camera.position.z = 1;
 createSketch((canvas) => {
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
-  const { mesh } = createMapping(texture);
-  scene.add(mesh);
-
+  const mapping = createMapping(texture);
+  scene.add(mapping.mesh);
+  createHandles(mapping.corners, mapping.update);
 
 
   renderer.setAnimationLoop(() => {
