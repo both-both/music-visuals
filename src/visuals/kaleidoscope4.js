@@ -23,8 +23,13 @@ export function kaleidoscope4(p, data) {
     if (!chamber) setup(p);
 
     const bass = data ? data[2] : 0;
-    const beat = Math.max(0, bass - 180) / 75; // 195 + 60 = 255. Ret begge, hvis tærsklen ændres
+    const threshold = 100;
+    const beat = Math.max(0, bass - threshold) / (255 - threshold);
+
     smooth += (beat - smooth) * 0.15;
+    if (p.frameCount % 30 === 0) console.log(bass, beat.toFixed(2), smooth.toFixed(2));
+
+
 
     turn += 0.002 + smooth * 0.03;
 

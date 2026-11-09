@@ -6,10 +6,12 @@ import { soundCircle } from './visuals/soundCircle.js';
 import { kaleidoscope } from './visuals/kaleidoscope.js';
 import { kaleidoscope3 } from './visuals/kaleidoscope3.js';
 import { kaleidoscope4 } from './visuals/kaleidoscope4.js';
+import { voronoi } from './visuals/voronoi/voronoi.js';
 
 
 
-const visuals = [circles, bars, kaleidoscope, soundCircle, kaleidoscope3, kaleidoscope4];
+
+const visuals = [circles, bars, kaleidoscope, soundCircle, kaleidoscope3, kaleidoscope4, voronoi];
 let current = 0
 
 // STYRING UNDER KONCERTEN
@@ -24,6 +26,7 @@ let current = 0
 // 4         SoundCircle
 // 5         Kaleidoscope3
 // 6         Kaleidoscope4
+// 7         voronoi
 // Træk i et hjørne af fladen for at mappe til lærredet
 window.addEventListener('keydown', (e) => {
     const number = Number(e.key);
